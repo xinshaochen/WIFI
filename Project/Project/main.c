@@ -8,6 +8,9 @@
 #include "inv_mpu_dmp_motion_driver.h" 
 #include "uart.h"
 #include "uartprotocol.h"
+#include "key.h"
+#include "string.h"
+#include "Timer.h"
 
 
 u8 buffdata[RECV_BUFF_LEN+SEND_BUFF_LEN];
@@ -95,11 +98,31 @@ void usart1_report_imu(short aacx,short aacy,short aacz,short gyrox,short gyroy,
 
 
 
+u8 reip[4]={0};
 void AliveEvent(UartEvent e)
 {
-	e->WriteString((u8 *)"TestRx0");//设备类型
-	e->SendAckPacket();
+
+
+	u8 type[4];
 	
+	reip[0]=192;
+  reip[1]=168;
+  reip[2]=1;
+	reip[3] = e->ReadByte(1);
+	
+	LCD_ShowNum(81,100,reip[0],3,16);
+	LCD_ShowNum(123,100,reip[1],3,16);
+	LCD_ShowNum(165,100,reip[2],3,16);
+	LCD_ShowNum(207,100,reip[3],3,16);
+//	e->ReadBuff(type,4);
+//	if(strstr((const char*)type,"Tx0")!=NULL)
+//	{
+//		e->WriteString("useIP()");
+//		e->WriteString((u8 *)"Rx0");//设备类型
+//		e->SendAckPacket();
+//	
+//	}
+//	
 }
 
 
@@ -183,6 +206,161 @@ void SetDataEvent(UartEvent e)
 }
 
 
+u8 getid=0;
+u8 id[12]={0};
+u8 ip[4]={0};
+
+void DeErrEvent(UartEvent e)
+{
+	u8 buf[50]={0};
+u8 bufip[15]={0};
+u8 *bufipp;
+u8 bufp[4]={0};
+	char *buf1;
+	char *buf2;
+u8 i;
+u8 f;
+	if(getid==1)
+	{
+		getid=0;
+		memset(id,0,12);
+		memset(ip,0,15);
+		e->ReadBuff(buf,packlen);
+		
+		buf1 = strstr((char *)buf,"id:");
+		if(buf1==NULL) return ;
+		buf1+=3;
+		i=0;
+		while((*buf1) != ' ')
+		{
+			id[i++] = *buf1;
+			buf1++;
+		}
+		
+		buf2 = strstr((char *)buf1,"ip:");
+		if(buf2==NULL) return;
+		buf2+=3;
+		i=0;
+		while((*buf2) != ' ')
+		{
+			bufip[i++]=*buf2;
+			buf2++;
+		}
+		
+		bufipp=(u8 *)bufip;
+		for(f=0;f<3;f++)
+		{
+			i=0;
+			bufp[0]=bufp[1]=bufp[2]=0;
+			while(*bufipp!='.')
+			{
+				bufp[i] = *bufipp;
+				bufipp++;
+				i++;
+			}
+			bufipp++;
+			bufp[i]='\0';
+			ip[f]=atoi((char *)bufp);
+		}
+		i=0;
+		bufp[0]=bufp[1]=bufp[2]=0;
+		while(*bufipp!='\0')
+		{
+			bufp[i] = *bufipp;
+			bufipp++;
+			i++;
+		}
+		bufp[i]='\0';
+		ip[3] = atoi((char *)bufp);
+		
+		
+		LCD_Fill(30,20,200,60,WHITE);
+		LCD_ShowString(30,20,200,16,16,id);	
+		LCD_ShowString(30,40,200,16,16,bufip);	
+	}
+	
+	
+}
+
+void ConnectSend(u8 *ip,u16 port,u8 *dat)
+{
+	u8 p[100];
+	sprintf(p,"ConnectSend(\"%s\",%d,\"%s\")",ip,port,dat);
+	UART_SendString(p);
+}
+
+void ConnectSendCode(u8 *ip,u16 port,u8 cmd,u8 *buff,u16 len)
+{
+	u8 p[300];
+	u8 p1[100];
+	u8 buf;
+	u8 sum=0;
+	sprintf(p,"ConnectSend(\"%s\",%d,{0xaa,0x%02X,0x%02X,0x%02X,",ip,port,_16T8H(len),_16T8L(len),cmd);
+	
+	while(len--)
+	{
+		buf=*buff;
+		sprintf(p1,"0x%02x,",buf);
+		strcat(p,p1);
+		sum+=buf;
+		buff++;
+	}
+	sprintf(p1,"0x%02x,",sum);
+	strcat(p,p1);
+	//sprintf(p,"%s,%X",p1,sum);
+	//sprintf(p1,"%s,0x55",p);
+	strcat(p,"0x55})");
+	UART_SendString(p);
+}
+void Broadcast(u16 port,u8 *dat)
+{
+	ConnectSend("192.168.1.255",port,dat);
+}
+void BroadcastCode(u16 port,u8 cmd,u8 *buff)
+{
+	ConnectSendCode("192.168.1.255",port,cmd,buff,sizeof(buff));
+}
+void GetIPIDCmd()
+{
+	getid=1;
+	UART.SendString("print(\"id:\"..node.chipid()..\" ip:\"..wifi.sta.getip()..\" \")");
+}
+void ScanCmd()
+{
+	
+}
+
+
+void keyTick()
+{
+	u8 key;
+	key=KEY_Scan(0);
+	if(key==3)
+	{
+		LED0=~LED0;
+		ConnectSendCode("192.168.1.255",2333,0,&ip[3],sizeof(ip[3]));
+		
+	}else if(key==2)
+	{
+		LED1=~LED1;
+		GetIPIDCmd();
+	}else if(key==1)
+	{
+		ConnectSendCode("192.168.1.255",2333,1,"abc",sizeof("abc"));
+	}
+}
+void showRefresh()
+{
+
+if(reip[0]!=0)
+{
+	
+}
+		
+		
+}
+
+
 int main(void)
 {
 
@@ -191,48 +369,62 @@ int main(void)
 	short aacx,aacy,aacz;		//加速度传感器原始数据
 	short gyrox,gyroy,gyroz;	//陀螺仪原始数据
 	u16 t=0;
+	u16 k=0;
+	u8 key;
 	
+	u8 buff[]="Rx0";
 	
 	u8 lcd_id[12];		
  	Stm32_Clock_Init(9);
 	//uart_init(72,9600);
 	//uart_init(72,500000);
 	delay_init(72);
-WaveInit();
+	Timer.Init(72);
+	KEY_Init();
+	LED_Init();
+	WaveInit();
 	LCD_Init();
-	LCD_ShowString(30,60,200,16,16,"Wave2 Val:");
-	LCD_ShowString(30,60,200,16,16,"Wave2 Val:");
-	LCD_ShowString(30,100,200,16,16,"P:");
-	LCD_ShowString(30,120,200,16,16,"I:");
-	LCD_ShowString(30,140,200,16,16,"D:");
+	
+	
+	
 	UART.Init(72,115200,OnRecvData);
 	UART.SendByte(0);
-	UART.SendByte(0xaa);
+	//UART.SendByte(0xaa);
 	
 	UartProtocol.Init(buffdata);
 	UartProtocol.AutoAck(ENABLE);
 	UartProtocol.RegisterCmd(Alive,AliveEvent);
 	UartProtocol.RegisterCmd(GetData,GetDataEvent);
 	UartProtocol.RegisterCmd(SetData,SetDataEvent);
+	UartProtocol.RegisterCmd(DeErr,DeErrEvent);
 
+	Timer.Start(5,UartProtocol.Check);
+	Timer.Start(50,keyTick);
+	Timer.Start(150,showRefresh);
 	
-		
+	
+	delay_ms(1000);
+	
+	
+	
+//	LCD_ShowString(30,60,200,16,16,"Wave2 Val:");
+//	LCD_ShowString(30,60,200,16,16,"Wave2 Val:");
+//	LCD_ShowString(30,100,200,16,16,"P:");
+//	LCD_ShowString(30,120,200,16,16,"I:");
+//	LCD_ShowString(30,140,200,16,16,"D:");
+//	
+	//getid=1;
+	//UART.SendString("print(node.chipid())");
+	LCD_ShowString(0,20,200,16,16,"ID:");
+	LCD_ShowString(0,40,200,16,16,"IP:");
+	
+	LCD_ShowString(0,100,200,16,16,"RemoteIP:     .     .     .");
+	GetIPIDCmd();
 	while(1)
 	{
-		UartProtocol.Check();
-		if(t>=200)
-		{
-			LCD_ShowNum(50,100,pid.P,3,16);
-			LCD_ShowNum(50,120,pid.I,3,16);
-			LCD_ShowNum(50,140,pid.D,3,16);
-			LCD_ShowNum(100,60,cm2,6,16);
-			time2 = GetWaveTime(1);
-			cm2 = Time2Length(time2);
-			t=0;
-		}
-		delay_ms(1);
-		t++;
+		Timer.Run();
 	}
+
 		//==============
 	//超声波部
 	

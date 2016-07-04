@@ -1,5 +1,7 @@
 local cmd={sendWifi=1,sendUart=2,getipid=3}
+local sk=net.createConnection(net.UDP,0)
 local s=net.createServer(net.UDP,5)--
+local cbuf=nil
 local user=nil
 local Esp8266={}
 
@@ -8,28 +10,27 @@ function t2s(t) for i=1,#t do t[i]=string.char(t[i]) end return table.concat(t) 
 local op = print
 
 function uartExp(data)
-
-	if Decode(data,cmd.sendWifi)==false then
-	local str={}
-	print=function(v) table.insert(str,(v or "nil")) end
-	local f,v=pcall(loadstring(data))
-	if not f then table.insert(str,"\r\n") table.insert(str,v)  end
-	print=op
-	print(table.concat(str))	
-	end
+if Decode(data,cmd.sendWifi)==false then
+local str={}
+print=function(v) table.insert(str,(v or "nil")) end
+local f,v=pcall(loadstring(data))
+if not f then table.insert(str,"\r\n") table.insert(str,v)  end
+print=op
+print("<"..table.concat(str)..">")
+end
 end
 
 s:listen(2333,nil)
 s:on("receive",function(c,d)
-user=c
-	if Decode(d,cmd.sendUart)==false then
-	local str={}
-	print=function(v) table.insert(str,(v or "nil")) end
-	local f,v=pcall(loadstring(d))
-	if not f then table.insert(str,"\r\n") table.insert(str,v) end
-	c:send(table.concat(str))
-	print=op
-	end
+cbuf=c
+if Decode(d,cmd.sendUart)==false then
+local str={}
+print=function(v) table.insert(str,(v or "nil")) end
+local f,v=pcall(loadstring(d))
+if not f then table.insert(str,"\r\n") table.insert(str,v) end
+c:send("<"..table.concat(str)..">")
+print=op
+end
 end)
 
 m=0
@@ -84,6 +85,32 @@ m=0 data={}
 return false
 end
 
+function ConnectSend(ip,port,dat)
+sk:connect(port,ip)
+
+
+if dat[1]==170 then
+sk:send(t2s(dat))
+else
+sk:send(dat)
+end
+end
+
+function broadcast(port,dat)
+sk:connect(port,"192.168.1.255")
+if dat[1]==170 then
+sk:send(t2s(dat))
+else
+sk:send(dat)
+end
+end
+function useIP()
+user=cbuf
+end
+function RemoveIP()
+user=nil
+end
+
 
 function appInit()
 Esp8266[cmd.sendWifi] = function (t) if user==nil then return end user:send(t2s(t)) tmr.alarm(0,30000,1,function() wifi.sta.connect() end) end--发送数据到wifi
@@ -113,3 +140,5 @@ Esp8266[cmd.sendUart](t)
 end
 
 appInit()
+
+tmr.alarm(1,800,0,function() uartExp("print(\"Test\")") end)

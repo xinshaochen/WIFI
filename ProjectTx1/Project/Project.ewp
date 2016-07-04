@@ -17,7 +17,7 @@
         <debug>1</debug>
         <option>
           <name>GenDeviceSelectMenu</name>
-          <state>UnspecifiedSTM8	STM8 - Unspecified</state>
+          <state>STM8S003K3	STM8S003K3</state>
         </option>
         <option>
           <name>GenCodeModel</name>
@@ -251,6 +251,7 @@
           <state>$PROJ_DIR$\..\Project</state>
           <state>$PROJ_DIR$\..\Refer\inc</state>
           <state>$PROJ_DIR$\..\Refer\src</state>
+          <state>$PROJ_DIR$\..\Refer</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -481,7 +482,7 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state></state>
+          <state>Project.srec</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>
@@ -599,7 +600,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>lnk0t.icf</state>
+          <state>$TOOLKIT_DIR$\config\lnkstm8s103f3.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -663,7 +664,7 @@
         </option>
         <option>
           <name>IlinkProgramEntryLabel</name>
-          <state></state>
+          <state>__iar_program_start</state>
         </option>
         <option>
           <name>DoFill</name>
@@ -1571,7 +1572,22 @@
     </settings>
   </configuration>
   <file>
+    <name>$PROJ_DIR$\..\Refer\ADC.c</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\..\Refer\delay.c</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\..\Refer\led.c</name>
+  </file>
+  <file>
     <name>$PROJ_DIR$\main.c</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\..\Refer\uart.c</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\..\Refer\uartprotocol.c</name>
   </file>
 </project>
 

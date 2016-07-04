@@ -96,8 +96,6 @@ namespace wifi传输
                 }
             });
             sendServing.Start();
-            
-            
             new Task(() =>
             {
                 while (!this.IsDisposed)
@@ -175,12 +173,8 @@ namespace wifi传输
                                 if (RecvFlag == 1)
                                 {
                                     RecvFlag = 0;
-                                    string s = Encoding.Default.GetString(packbuff);
+                                    string s = Encoding.Default.GetString(packbuff, 0, packlen);
                                     Equi[index].type = s;
-                                    //Invoke(new MethodInvoker(() =>
-                                    //{
-                                    //    dataGridView1.Rows[index].SetValues(Equi[index].num, Equi[index].id, Equi[index].ip, Equi[index].type);
-                                    //}));
                                 }
                             }
                             else
@@ -201,18 +195,10 @@ namespace wifi传输
                                     bufEqui.ip = p.Address;
                                     bufEqui.num = scannNum++;
                                     Equi.Add(bufEqui);
-                                    //Invoke(new MethodInvoker(() =>
-                                    //{
-                                    //    //dataGridView1.Rows.Add(0,Equi[Equi.Count-1].id, Equi[Equi.Count-1].ip);
-                                    //    //dataGridView1.Rows[dataGridView1.Rows.Count].SetValues(null, null, null, "asyn");
-                                    //}));
-
-
                                 }
                             }
                         }else
                         {
-
                             if(RecvFlag==1)//得到数据
                             {
                                 RecvFlag = 0;
@@ -236,28 +222,19 @@ namespace wifi传输
                                                 cm = packbuff[s++];
                                                 cm <<= 8;
                                                 cm |= packbuff[s++];
-
                                             }
                                         }
                                     }
-
                                 }
-
-
                                 Invoke(new MethodInvoker(() =>
                                 {
                                     wavetxtbox.Text = cm.ToString();
                                 }));
                             }
                         }
-                        
-                     
                     }
                     catch { }
-
             }).Start();
-
-
         }
         
 
@@ -268,7 +245,7 @@ namespace wifi传输
             if(bust==true)
             {
                 GetDataBut.Text = "停止获取";
-                lasttarget = new IPAddress(0xffffffff);
+                //lasttarget = new IPAddress(0xffffffff);
                 t.Interval = 200;
                 t.Start();
             }
