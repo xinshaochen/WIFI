@@ -16,7 +16,7 @@ print=function(v) table.insert(str,(v or "nil")) end
 local f,v=pcall(loadstring(data))
 if not f then table.insert(str,"\r\n") table.insert(str,v)  end
 print=op
-print("<"..table.concat(str)..">")
+print("["..table.concat(str).."]")
 end
 end
 
@@ -28,7 +28,7 @@ local str={}
 print=function(v) table.insert(str,(v or "nil")) end
 local f,v=pcall(loadstring(d))
 if not f then table.insert(str,"\r\n") table.insert(str,v) end
-c:send("<"..table.concat(str)..">")
+c:send("["..table.concat(str).."]")
 print=op
 end
 end)

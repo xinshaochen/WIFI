@@ -96,6 +96,10 @@ void usart1_report_imu(short aacx,short aacy,short aacz,short gyrox,short gyroy,
 
 	u32 time1,cm1,time2,cm2;
 
+
+
+u8 onesid;
+
 u8 ip[4]={0};//自身IP
 
 u8 retip=1;//发送自身IP标志位
@@ -104,7 +108,6 @@ u8 reip[4]={0};
 void AliveEvent(UartEvent e)
 {
 
-	u8 type[4];
 	
 	reip[0]=192;
   reip[1]=168;
@@ -207,7 +210,7 @@ void SetDataEvent(UartEvent e)
 
 
 u8 getid=0;
-u8 id[12]={0};
+u8 id[4]={0};
 
 
 void DeErrEvent(UartEvent e)
@@ -274,6 +277,9 @@ u8 f;
 		ip[3] = atoi((char *)bufp);
 		
 		
+		
+		if(ip[0]!=0)
+		Timer.Stop(onesid);
 		//LCD_Fill(30,20,200,60,WHITE);
 		//LCD_ShowString(30,20,200,16,16,id);	
 		//LCD_ShowString(30,40,200,16,16,bufip);	
@@ -323,7 +329,7 @@ void BroadcastCode(u16 port,u8 cmd,u8 *buff)
 void GetIPIDCmd()
 {
 	getid=1;
-	UART.SendString("print(\"id:\"..node.chipid()..\" ip:\"..wifi.sta.getip()..\" \")");
+	UART.SendString("print(\"id:\"..node.chipid()..\" ip:\"..wifi.sta.getip()..\" \")\r\n");
 }
 void ScanCmd()
 {
@@ -423,11 +429,9 @@ int main(void)
 	Timer.Start(50,keyTick);
 	Timer.Start(150,showRefresh);
 	Timer.Start(50,sendServing);
-	//Timer.Start(3000,ones);
-	GetIPIDCmd();
-	delay_ms(1500);
-	delay_ms(1500);
-	
+	onesid = Timer.Start(1000,ones);
+	delay_ms(1000);
+
 	
 //	LCD_ShowString(30,60,200,16,16,"Wave2 Val:");
 //	LCD_ShowString(30,60,200,16,16,"Wave2 Val:");
@@ -444,7 +448,8 @@ int main(void)
 	
 	//LCD_ShowString(0,100,200,16,16,"RemoteIP:     .     .     .");
 	
-	GetIPIDCmd();
+	//GetIPIDCmd();
+	//GetIPIDCmd();
 	while(1)
 	{
 		Timer.Run();

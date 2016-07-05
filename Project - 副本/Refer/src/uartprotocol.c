@@ -55,7 +55,7 @@ void OnRecvData(u8 dat)
 		case 0:
 			if(dat==0xaa)
 				recvmode=1;
-			if(dat==0x3C)
+			if(dat==0x5B)
 			{
 				
 				recvmode=10;
@@ -114,7 +114,7 @@ void OnRecvData(u8 dat)
 			
 			
 		case 10:
-			if(dat==0x3e)
+			if(dat==0x5D)
 			{
 				recvmode=0;
 				RecvFlag=DE_ERROR;//接收到非解码的数据

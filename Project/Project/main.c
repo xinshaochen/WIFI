@@ -96,24 +96,72 @@ void usart1_report_imu(short aacx,short aacy,short aacz,short gyrox,short gyroy,
 
 	u32 time1,cm1,time2,cm2;
 
+u8 onesid;
 
-
-u8 reip[4]={0};
+u8 reip[10][4]={0};
+u8 devQu=0;//设备数量
 void AliveEvent(UartEvent e)
 {
 
-
-	u8 type[4];
+	u8 i;
+	u8 l;
+	u8 s=0;
+	u8 buf[4];
+	//u8 type[4];
 	
-	reip[0]=192;
-  reip[1]=168;
-  reip[2]=1;
-	reip[3] = e->ReadByte(1);
+	buf[0]=192;
+	buf[1]=168;
+	buf[2]=1;
+	buf[3]=e->ReadByte();
 	
-	LCD_ShowNum(81,100,reip[0],3,16);
-	LCD_ShowNum(123,100,reip[1],3,16);
-	LCD_ShowNum(165,100,reip[2],3,16);
-	LCD_ShowNum(207,100,reip[3],3,16);
+	if(devQu>0)
+	{
+		for(i=0;i<devQu;i++)
+		{
+			for(l=0;l<4;l++)
+			{
+				if(buf[l]==reip[i][l])
+				{
+					s++;
+				}
+			}
+			if(s>=4)
+			{
+				break;
+			}else
+			s=0;
+		}
+		if(i==devQu)
+		{
+			
+			for(l=0;l<4;l++)
+			{
+				reip[devQu][l]=buf[l];
+			}
+			LCD_ShowNum(81,100+(devQu*20),reip[devQu][0],3,16);
+			LCD_ShowNum(123,100+(devQu*20),reip[devQu][1],3,16);
+			LCD_ShowNum(165,100+(devQu*20),reip[devQu][2],3,16);
+			LCD_ShowNum(217,100+(devQu*20),reip[devQu][3],3,16);
+			
+			
+			devQu++;
+		}
+		
+	}else
+	{
+		for(l=0;l<4;l++)
+		{
+			reip[0][l]=buf[l];
+		}
+		devQu++;
+		LCD_ShowNum(81,100,reip[0][0],3,16);
+		LCD_ShowNum(123,100,reip[0][1],3,16);
+		LCD_ShowNum(165,100,reip[0][2],3,16);
+		LCD_ShowNum(217,100,reip[0][3],3,16); 
+	}
+	
+	
+	
 //	e->ReadBuff(type,4);
 //	if(strstr((const char*)type,"Tx0")!=NULL)
 //	{
@@ -273,6 +321,7 @@ u8 f;
 		bufp[i]='\0';
 		ip[3] = atoi((char *)bufp);
 		
+		Timer.Stop(onesid);
 		
 		LCD_Fill(30,20,200,60,WHITE);
 		LCD_ShowString(30,20,200,16,16,id);	
@@ -323,7 +372,7 @@ void BroadcastCode(u16 port,u8 cmd,u8 *buff)
 void GetIPIDCmd()
 {
 	getid=1;
-	UART.SendString("print(\"id:\"..node.chipid()..\" ip:\"..wifi.sta.getip()..\" \")");
+	UART.SendString("print(\"id:\"..node.chipid()..\" ip:\"..wifi.sta.getip()..\" \")\r\n");
 }
 void ScanCmd()
 {
@@ -338,6 +387,8 @@ void keyTick()
 	if(key==3)
 	{
 		LED0=~LED0;
+		LCD_Fill(80,100,280,160,WHITE);
+		devQu=0;
 		ConnectSendCode("192.168.1.255",2333,0,&ip[3],sizeof(ip[3]));
 		
 	}else if(key==2)
@@ -358,6 +409,12 @@ if(reip[0]!=0)
 }
 		
 		
+}
+
+
+void ones()
+{
+	GetIPIDCmd();
 }
 
 
@@ -401,9 +458,10 @@ int main(void)
 	Timer.Start(5,UartProtocol.Check);
 	Timer.Start(50,keyTick);
 	Timer.Start(150,showRefresh);
+	onesid = Timer.Start(1500,ones);
 	
 	
-	delay_ms(1000);
+	delay_ms(1500);
 	
 	
 	
@@ -418,8 +476,8 @@ int main(void)
 	LCD_ShowString(0,20,200,16,16,"ID:");
 	LCD_ShowString(0,40,200,16,16,"IP:");
 	
-	LCD_ShowString(0,100,200,16,16,"RemoteIP:     .     .     .");
-	GetIPIDCmd();
+	LCD_ShowString(0,100,200,16,16,"RemoteIP:     .     .    .   ");
+	//GetIPIDCmd();
 	while(1)
 	{
 		Timer.Run();

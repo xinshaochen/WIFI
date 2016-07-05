@@ -15,6 +15,7 @@ const TimerBase Timer={
 	}
 };
 
+
 _Timer TimerList[MAXTIMER];	//定时器列表
 u8 this;										//当前执行
 TimerBit TimerUse;					//使用槽
@@ -23,6 +24,7 @@ u32 TimerTick=0;
 //初始化定时器
 void InitTimer(u8 mhz)			
 {
+	
 	mhz/=8;
 	SysTick->CTRL	&=	0xfffffffb;	//sysclock/8  
 	SysTick->LOAD	=		(int)mhz*1000;				//1000us timer   //滴答时间
