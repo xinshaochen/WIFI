@@ -47,7 +47,7 @@ namespace wifi_Tx
         uint scannCount = 0;//扫描次数
         int scannNum = 0;
 
-
+        
         Stopwatch sw = new Stopwatch();
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -440,7 +440,7 @@ namespace wifi_Tx
             return d;
         }
         //==================================================================================================================
-
+          
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             devSelect = dataGridView1.CurrentRow.Index;
