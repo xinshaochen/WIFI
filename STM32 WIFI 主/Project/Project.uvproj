@@ -461,6 +461,21 @@
               <FilePath>..\Refer\eMPL\inv_mpu_dmp_motion_driver.c</FilePath>
             </File>
             <File>
+              <FileName>mpupc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Refer\src\mpupc.c</FilePath>
+            </File>
+            <File>
+              <FileName>key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Refer\src\key.c</FilePath>
+            </File>
+            <File>
+              <FileName>adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Refer\src\adc.c</FilePath>
+            </File>
+            <File>
               <FileName>uartprotocol.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Refer\src\uartprotocol.c</FilePath>
@@ -471,14 +486,14 @@
               <FilePath>..\Refer\src\uart.c</FilePath>
             </File>
             <File>
-              <FileName>key.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Refer\src\key.c</FilePath>
-            </File>
-            <File>
               <FileName>Timer.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Refer\src\Timer.c</FilePath>
+            </File>
+            <File>
+              <FileName>wifi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Refer\src\wifi.c</FilePath>
             </File>
           </Files>
         </Group>

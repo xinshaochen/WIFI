@@ -1,5 +1,5 @@
 Dependencies for Project 'Project', Target 'Project': (DO NOT MODIFY !)
-F (.\main.c)(0x577CA384)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\Boot -I..\Refer\inc -I..\Refer\eMPL-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F10x-DSTM32F10X_MD -o ..\obj\main.o --omf_browse ..\obj\main.crf --depend ..\obj\main.d)
+F (.\main.c)(0x577CE67A)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\Boot -I..\Refer\inc -I..\Refer\eMPL-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F10x-DSTM32F10X_MD -o ..\obj\main.o --omf_browse ..\obj\main.crf --depend ..\obj\main.d)
 I (C:\Users\xinsh\Desktop\Git\WIFI\STM32 WIFI 副\Refer\inc\delay.h)(0x5775CA97)
 I (C:\Users\xinsh\Desktop\Git\WIFI\STM32 WIFI 副\Refer\inc\sys.h)(0x528B0F30)
 I (C:\Users\xinsh\Desktop\Git\WIFI\STM32 WIFI 副\Refer\inc\stm32f10x.h)(0x4F1E2E3C)
@@ -22,6 +22,7 @@ I (C:\Users\xinsh\Desktop\Git\WIFI\STM32 WIFI 副\Refer\inc\uartprotocol.h)(0x577
 I (C:\Users\xinsh\Desktop\Git\WIFI\STM32 WIFI 副\Refer\inc\key.h)(0x50442308)
 I (C:\Keil\ARM\ARMCC\include\string.h)(0x51C7B744)
 I (C:\Users\xinsh\Desktop\Git\WIFI\STM32 WIFI 副\Refer\inc\Timer.h)(0x575FB0F4)
+I (C:\Users\xinsh\Desktop\Git\WIFI\STM32 WIFI 副\Refer\inc\adc.h)(0x577CBAE0)
 F (..\Boot\startup_stm32f10x_md.s)(0x4A1543F8)(--cpu Cortex-M3 -g --apcs=interwork --pd "__MICROLIB SETA 1"-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F10x--list .\startup_stm32f10x_md.lst --xref -o ..\obj\startup_stm32f10x_md.o --depend ..\obj\startup_stm32f10x_md.d)
 F (..\Refer\src\led.c)(0x5773AFD4)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\Boot -I..\Refer\inc -I..\Refer\eMPL-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F10x-DSTM32F10X_MD -o ..\obj\led.o --omf_browse ..\obj\led.crf --depend ..\obj\led.d)
 I (C:\Users\xinsh\Desktop\Git\WIFI\STM32 WIFI 副\Refer\inc\led.h)(0x5773AFD4)
@@ -142,4 +143,11 @@ I (C:\Users\xinsh\Desktop\Git\WIFI\STM32 WIFI 副\Refer\inc\stm32f10x.h)(0x4F1E2E
 I (C:\Users\xinsh\Desktop\Git\WIFI\STM32 WIFI 副\Boot\core_cm3.h)(0x4D523B58)
 I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7B744)
 I (C:\Users\xinsh\Desktop\Git\WIFI\STM32 WIFI 副\Refer\inc\system_stm32f10x.h)(0x4F1E2E3C)
-F (..\Refer\src\adc.c)(0x50CF28AC)()
+F (..\Refer\src\adc.c)(0x577CBAE0)(-c --cpu Cortex-M3 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I..\Boot -I..\Refer\inc -I..\Refer\eMPL-I C:\Keil\ARM\RV31\INC-I C:\Keil\ARM\CMSIS\Include-I C:\Keil\ARM\Inc\ST\STM32F10x-DSTM32F10X_MD -o ..\obj\adc.o --omf_browse ..\obj\adc.crf --depend ..\obj\adc.d)
+I (C:\Users\xinsh\Desktop\Git\WIFI\STM32 WIFI 副\Refer\inc\adc.h)(0x577CBAE0)
+I (C:\Users\xinsh\Desktop\Git\WIFI\STM32 WIFI 副\Refer\inc\sys.h)(0x528B0F30)
+I (C:\Users\xinsh\Desktop\Git\WIFI\STM32 WIFI 副\Refer\inc\stm32f10x.h)(0x4F1E2E3C)
+I (C:\Users\xinsh\Desktop\Git\WIFI\STM32 WIFI 副\Boot\core_cm3.h)(0x4D523B58)
+I (C:\Keil\ARM\ARMCC\include\stdint.h)(0x51C7B744)
+I (C:\Users\xinsh\Desktop\Git\WIFI\STM32 WIFI 副\Refer\inc\system_stm32f10x.h)(0x4F1E2E3C)
+I (C:\Users\xinsh\Desktop\Git\WIFI\STM32 WIFI 副\Refer\inc\delay.h)(0x5775CA97)
